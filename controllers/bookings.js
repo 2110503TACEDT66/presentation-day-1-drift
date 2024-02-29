@@ -48,12 +48,7 @@ exports.getBooking = async (req,res,next)=>{
 
 
 exports.addBooking = async (req,res,next)=>{
-    //add booking with this JSON format
-    // {
-    //      hotel:...,
-    //      user:...,
-    //      bookDate:...,
-    // }
+
     try{
         req.body.hotel = req.params.hotelId; //add hotel ID to JSON
 

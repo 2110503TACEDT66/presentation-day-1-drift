@@ -20,6 +20,8 @@ const BookingSchema = new mongoose.Schema({
         default:Date.now
     }
 
-});
+},
+    {versionKey:false}
+);
 
 module.exports=mongoose.model('Booking' , BookingSchema);

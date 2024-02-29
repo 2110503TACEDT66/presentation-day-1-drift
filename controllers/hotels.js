@@ -113,9 +113,8 @@ exports.updateHotel= async (req,res,next)=>{
 exports.deleteHotel= async (req,res,next)=>{
     try{
         const hotel = await Hotel.findById(req.params.id);
-        console.log(hotel);
         if(!hotel){
-            return res.status(400).json({success:false});
+            return res.status(400).json({success:false , message:`Couldn't find hotel id of ${req.params.id}`});
         }
         //call this seperately to trigger model's pre function
         await hotel.deleteOne();
