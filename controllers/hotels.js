@@ -1,6 +1,6 @@
 const Hotel = require('../models/Hotel');
 
-//mongoDB
+
 exports.getHotels= async (req,res,next)=>{
     try{
         let query;
@@ -16,7 +16,7 @@ exports.getHotels= async (req,res,next)=>{
         queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g , match => `$${match}` );
 
         //finding from query
-        query=Hotel.find(JSON.parse(queryStr)).populate('appointments');
+        query=Hotel.find(JSON.parse(queryStr)).populate('bookings');
 
         //if query contain 'select'
         if(req.query.select){
@@ -66,17 +66,18 @@ exports.getHotels= async (req,res,next)=>{
         res.status(200).json({success:true , count:hotels.length , pagination , data : hotels});
         
     }catch(err){
+        console.log(err);
         res.status(400).json({success:false});
     };
 };
 
 exports.getHotel= async (req,res,next)=>{
     try{
-        const hospital = await Hotel.findById(req.params.id);
-        if(!hospital){
+        const hotel = await Hotel.findById(req.params.id);
+        if(!hotel){
             return res.status(400).json({success:false});
         }
-        res.status(200).json({success:true,data:hospital});
+        res.status(200).json({success:true,data:hotel});
     }
     catch(err){
         res.status(400).json({success:false});
@@ -84,10 +85,10 @@ exports.getHotel= async (req,res,next)=>{
 };
 
 exports.createHotel= async (req,res,next)=>{
-    const hospital = await Hotel.create(req.body);
+    const hotel = await Hotel.create(req.body);
     res.status(201).json({
         success:true,
-        data:hospital
+        data:hotel
     });
 };
 
@@ -95,14 +96,14 @@ exports.updateHotel= async (req,res,next)=>{
     try{
 
 
-        const hospital = await Hotel.findByIdAndUpdate(req.params.id , req.body,{
+        const hotel = await Hotel.findByIdAndUpdate(req.params.id , req.body,{
             new:true,
             runValidators:true
         })
-        if(!hospital){
+        if(!hotel){
             return res.status(400).json({success:false});
         }
-        res.status(200).json({success:true , data:hospital});
+        res.status(200).json({success:true , data:hotel});
     }
     catch(err){
         res.status(400).json({success:false});
@@ -111,15 +112,15 @@ exports.updateHotel= async (req,res,next)=>{
 
 exports.deleteHotel= async (req,res,next)=>{
     try{
-        const hospital = await Hotel.findById(req.params.id);
-        
-        if(!hospital){
+        const hotel = await Hotel.findById(req.params.id);
+        console.log(hotel);
+        if(!hotel){
             return res.status(400).json({success:false});
         }
-        hospital.deleteOne({}); //call this seperately to trigger model's pre function
+        //call this seperately to trigger model's pre function
+        await hotel.deleteOne();
 
         res.status(200).json( { success:true , data:{} } );
-    
     }
     catch(err){
         res.status(400).json({success:false});

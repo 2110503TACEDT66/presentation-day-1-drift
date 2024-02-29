@@ -1,5 +1,5 @@
 const Booking = require('../models/Booking');
-const Hospital = require('../models/Hotel');
+const Hotel = require('../models/Hotel');
 
 exports.getBookings = async (req,res,next)=>{
     let query;
@@ -27,7 +27,6 @@ exports.getBookings = async (req,res,next)=>{
     }
 }
 
-
 exports.getBooking = async (req,res,next)=>{
     try{
         const booking = await Booking.findById(req.params.id).populate({
@@ -49,16 +48,23 @@ exports.getBooking = async (req,res,next)=>{
 
 
 exports.addBooking = async (req,res,next)=>{
+    //add booking with this JSON format
+    // {
+    //      hotel:...,
+    //      user:...,
+    //      bookDate:...,
+    // }
     try{
-        req.body.hotel = req.params.hotelId;
+        req.body.hotel = req.params.hotelId; //add hotel ID to JSON
 
-        const hotel = await Hospital.findById(req.params.hotelId);
+        const hotel = await Hotel.findById(req.params.hotelId);
 
+        //check if hotel not exist
         if(!hotel){
             return res.status(404).json({success:false , message : `No hotel with the id of ${req.params.hotelId}`});
         }
 
-        req.body.user=req.user.id;
+        req.body.user=req.user.id; //add user ID field to JSON
 
         //check if user's bookings exceed limit
         const existedBookings = await Booking.find({user:req.user.id});
