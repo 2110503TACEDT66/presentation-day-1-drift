@@ -29,13 +29,13 @@ exports.login = async (req,res,next)=>{
         //check if user exists
         const user = await User.findOne({email}).select('password');
         if(!user){
-            return res.status(400).json({success:false,msg:'Invalid credentials'});
+            return res.status(400).json({success:false,msg:'Invalid credentials: Wrong Email or Password'});
         }
         
         //check if password match
         const isMatch = await user.matchPassword(password);
         if(!isMatch){
-            return res.status(401).json({success:false,msg:'Invalid credentials'});
+            return res.status(401).json({success:false,msg:'Invalid credentials: Wrong Password'});
         }
         
         //success!!
@@ -48,11 +48,12 @@ exports.login = async (req,res,next)=>{
 
 exports.register = async (req,res,next)=>{
     try{
-        const{name,email,password,role} = req.body;
+        const{name,tel,email,password,role} = req.body;
 
         const user = await User.create({
             name,
             email,
+            tel,
             password,
             role
         });
