@@ -115,7 +115,7 @@ exports.deleteBooking = async (req,res,next)=>{
             return res.status(401).json({success:false , message: `User ${req.user.id} is not authorized to delete this booking`});
         }
 
-        booking.deleteOne(); //use deleteOne to trigger cascade delete of {booking-hotel}
+        await booking.deleteOne(); //use deleteOne to trigger cascade delete of {booking-hotel}
 
         res.status(200).json({success:true , data : {}});
     
