@@ -1,5 +1,26 @@
 const Booking = require('../models/Booking');
 const Hotel = require('../models/Hotel');
+const emailjs = require('@emailjs/nodejs')
+const dotenv = require('dotenv');
+dotenv.config({path:'./config/config.env'});
+
+async function sendEmail(template){
+
+    var data = {
+        service_id:"service_1hsu1sy",
+        template_id:"template_pm7ryvd",
+        user_id:"RQocaKDgwf4MbLFvs",
+        template_params: template
+    }
+
+    await fetch("https://api.emailjs.com/api/v1.0/email/send",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body : JSON.stringify(data)
+    })
+    .then(()=> console.log("Email Sent") )
+    .catch((err)=>console.log(JSON.stringify(err)))
+}
 
 exports.getBookings = async (req,res,next)=>{
     let query;
@@ -68,8 +89,28 @@ exports.addBooking = async (req,res,next)=>{
         }
 
         const booking = await Booking.create(req.body);
-        res.status(201).json({success:true , data:booking});
+
+    //=======================<EMAILJS API>==========================================
+        //emailjs API for sending email to user about booking
+        emailjs.init({publicKey:process.env.EMAILJS_PUBLIC});
+        //value to use in email form
+        var templateParams = {
+            bookingId: booking._id,
+            userEmail:req.user.email,
+            bookCreated: Intl.DateTimeFormat('en-GB').format(booking.createdAt),
+            bookDate: Intl.DateTimeFormat('en-GB').format(booking.bookDate),
+            hotelName: hotel.name
+        }
+        //send email
+        emailjs.send( process.env.EMAILJS_SERVICE , process.env.EMAILJS_TEMPLATE , templateParams)
+            .then(
+                (response) => {console.log("Email sending : SUCCESS")},
+                (err) => {console.log("Email sending : FAILED",err)},
+            );
+    //=======================<EMAILJS API>==========================================
     
+        res.status(201).json({success:true , data:booking});
+
     }catch(err){
         console.log(err);
         res.status(400).json({success:false , message : "Cannot create Booking"});
