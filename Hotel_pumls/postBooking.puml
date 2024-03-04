@@ -1,0 +1,37 @@
+@startuml Manage Booking (POST)
+
+header Hotel Booking Sequence Diagram
+footer Page %page% of %lastpage%
+title "Manage Booking (POST)"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:bookings" as routerBookings
+participant "<<middleware>>\n:auth" as middleware
+participant "<<controllers>>\n:bookings" as controllersBookings
+participant "<<model>>\n:Booking" as modelBooking
+database "<<MongoDB>>\n:bookings" as BookingsDatabase
+
+client->server ++:req.post('/api/v1/bookings')
+server->routerBookings ++:app.use('/api/v1/bookings',bookings)
+
+
+
+routerBookings -> middleware ++: protect(),authorize('admin','user')
+alt token not match/is null
+    client <- middleware : not Authorize to access
+end
+middleware -> controllersBookings ++: addBooking()
+
+alt not own/not admin
+    client <- controllersBookings :not authorized to update
+end
+
+controllersBookings->modelBooking ++:findById(req.params.id)
+modelBooking ->HospitalsDatabase ++: BookingSchema
+HospitalsDatabase --> modelBooking --: booking
+controllersBookings <-- modelBooking --:booking
+controllersBookings->client --:response
+
+
+@enduml
