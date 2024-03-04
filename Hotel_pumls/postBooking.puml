@@ -23,13 +23,13 @@ alt token not match/is null
 end
 middleware -> controllersBookings ++: addBooking()
 
-alt not own/not admin
-    client <- controllersBookings :not authorized to update
+alt exceed limit (3)
+    client <- controllersBookings :unable to post
 end
 
 controllersBookings->modelBooking ++:findById(req.params.id)
-modelBooking ->HospitalsDatabase ++: BookingSchema
-HospitalsDatabase --> modelBooking --: booking
+modelBooking ->BookingsDatabase ++: BookingSchema
+BookingsDatabase --> modelBooking --: booking
 controllersBookings <-- modelBooking --:booking
 controllersBookings->client --:response
 

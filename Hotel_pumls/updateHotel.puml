@@ -1,6 +1,6 @@
 @startuml Manage Hotel (UPDATE)
 
-header Sameple VacQ Sequence Diagram
+header Hotel Booking Sequence Diagram
 footer Page %page% of %lastpage%
 title "Manage Hotel (UPDATE)"
 
@@ -10,7 +10,7 @@ participant "<<router>>\n:hotels" as routerHotels
 participant "<<middleware>>\n:auth" as middleware
 participant "<<controllers>>\n:hotels" as controllersHotels
 participant "<<model>>\n:Hotel" as modelHotel
-database "<<MongoDB>>\n:hotels" as HospitalsDatabase
+database "<<MongoDB>>\n:hotels" as HotelsDatabase
 
 client->server ++:req.put('/api/v1/hotels/:id')
 server->routerHotels ++:app.use('/api/v1/hotels/:id',hotels)
@@ -23,11 +23,11 @@ middleware -> controllersHotels ++:updateHotel()
 
 
 controllersHotels->modelHotel ++:findByIdAndUpdate(req.params.id,req.body)
-modelHotel ->HospitalsDatabase ++: HospitalSchema
+modelHotel ->HotelsDatabase ++: HotelSchema
 
 
 
-HospitalsDatabase --> modelHotel --: hotel
+HotelsDatabase --> modelHotel --: hotel
 controllersHotels <-- modelHotel --:hotel
 controllersHotels->client --:response
 

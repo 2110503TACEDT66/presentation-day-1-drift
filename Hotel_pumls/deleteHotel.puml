@@ -28,11 +28,6 @@ end
 middleware -> controllerHotels ++:deleteHotel()
 
 
-controllerHotels->modelHotel ++:deleteOne()
-alt not an admin
-    client <- modelHotel: not Authorize to delete
-end
-
 modelHotel->modelBooking ++:BookingSchema
 
 modelBooking ->BookingsDatabase -- :deleteMany({hotel:this._id})

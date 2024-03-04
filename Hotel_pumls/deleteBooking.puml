@@ -19,7 +19,7 @@ server->routerBookings ++:app.use('/api/v1/bookings/:id',bookings)
 
 routerBookings -> middleware ++: protect(),authorize('admin','user')
 alt token not match/is null
-    client <- middleware : not Authorize to access
+    client <- middleware : not authorize to access
 end
 middleware -> controllersBookings ++: deleteBooking()
 
@@ -28,8 +28,8 @@ alt not own/not admin
 end
 
 controllersBookings->modelBooking ++:findByIdAndDelete(req.params.id)
-modelBooking ->HospitalsDatabase ++: BookingSchema
-HospitalsDatabase --> modelBooking --: booking
+modelBooking ->BookingsDatabase ++: BookingSchema
+BookingsDatabase --> modelBooking --: booking
 controllersBookings <-- modelBooking --:booking
 controllersBookings->client --:response
 

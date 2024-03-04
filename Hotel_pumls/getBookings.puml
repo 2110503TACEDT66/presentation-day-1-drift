@@ -20,7 +20,7 @@ server->routerBookings ++:app.use('/api/v1/bookings',bookings)
 routerBookings -> middleware ++: protect()
 
 alt token not match
-    client <- middleware : not Authorize to access
+    client <- middleware : not authorize to access
 end
 
 middleware -> controllersBookings ++:getBookings()
