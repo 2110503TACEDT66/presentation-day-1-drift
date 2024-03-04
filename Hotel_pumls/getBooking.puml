@@ -24,11 +24,13 @@ end
 
 middleware -> controllersBookings ++:getBooking()
 
-controllersBookings->modelBooking ++:findById(req.params.id)
+controllersBookings->modelBooking ++:findById()
 modelBooking ->BookingsDatabase ++: BookingSchema
 
 
-
+alt not an admin
+    controllersBookings -> modelBooking : findById({user:req.user.id}) 
+end
 
 BookingsDatabase --> modelBooking --: booking
 controllersBookings <-- modelBooking --:booking

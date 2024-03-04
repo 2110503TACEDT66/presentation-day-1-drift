@@ -24,7 +24,7 @@ end
 middleware -> controllersBookings ++: deleteBooking()
 
 alt not own/not admin
-    client <- controllersBookings :not authorized to update
+    client <- controllersBookings :not authorized to delete
 end
 
 controllersBookings->modelBooking ++:findByIdAndDelete(req.params.id)
