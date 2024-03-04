@@ -12,7 +12,7 @@ router.route('/')
     .post(protect , authorize('admin' , 'user') , addBooking);
 
 router.route('/:id')
-    .get(protect , getBooking)
+    .get(protect , authorize('admin' , 'user') ,getBooking)
     .put(protect , authorize('admin' , 'user') , updateBooking)
     .delete(protect , authorize('admin' , 'user') , deleteBooking);
 

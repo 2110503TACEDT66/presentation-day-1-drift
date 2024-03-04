@@ -42,6 +42,10 @@ exports.getBooking = async (req,res,next)=>{
             return res.status(404).json({success:false , message: `No booking with the id of ${req.param.id}`});
         }
 
+        if(booking.user.toString() !== req.user.id && req.user.role !=='admin'){
+            return res.status(401).json({success:false , message: `User ${req.user.id} is not authorized to view this booking`});
+        }
+
         res.status(200).json({success:true , data:booking});
     }catch(err){
         console.log(err);
