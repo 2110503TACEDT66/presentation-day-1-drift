@@ -4,23 +4,6 @@ const emailjs = require('@emailjs/nodejs')
 const dotenv = require('dotenv');
 dotenv.config({path:'./config/config.env'});
 
-async function sendEmail(template){
-
-    var data = {
-        service_id:"service_1hsu1sy",
-        template_id:"template_pm7ryvd",
-        user_id:"RQocaKDgwf4MbLFvs",
-        template_params: template
-    }
-
-    await fetch("https://api.emailjs.com/api/v1.0/email/send",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body : JSON.stringify(data)
-    })
-    .then(()=> console.log("Email Sent") )
-    .catch((err)=>console.log(JSON.stringify(err)))
-}
 
 exports.getBookings = async (req,res,next)=>{
     let query;
@@ -103,10 +86,10 @@ exports.addBooking = async (req,res,next)=>{
         }
         //send email
         emailjs.send( process.env.EMAILJS_SERVICE , process.env.EMAILJS_TEMPLATE , templateParams)
-            .then(
-                (response) => {console.log("Email sending : SUCCESS")},
-                (err) => {console.log("Email sending : FAILED",err)},
-            );
+                .then(
+                   (response) => {console.log("Email sending : SUCCESS")},
+                   (err) => {console.log("Email sending : FAILED",err)},
+                );
     //=======================<EMAILJS API>==========================================
     
         res.status(201).json({success:true , data:booking});
