@@ -8,9 +8,12 @@ const {xss} = require('express-xss-sanitizer');
 const rateLimit=require('express-rate-limit');
 const hpp=require('hpp');
 const cors = require('cors');
-
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
+
+const PORT = process.env.PORT || 5000;
+
+
 
 //load env vars
 dotenv.config({path:'./config/config.env'});
@@ -33,7 +36,7 @@ const swaggerOptions = {
         },
         servers:[
             {
-                url:'http://localhost:3000/api/v1'
+                url:process.env.HOST + ':' + PORT +'/api/v1'
             }
         ]
     },
@@ -67,7 +70,7 @@ app.use('/api/v1/auth' , auth);
 app.use('/api/v1/bookings', bookings)
 
 //listen users on PORT
-const PORT = process.env.PORT || 5000;
+
 const server = app.listen(PORT , console.log('Server running in' , process.env.NODE_ENV , 'mode on port' , PORT));
 //Handle unhandle promise rejections
 process.on('unhandledRejection' , (err,promise)=>{
